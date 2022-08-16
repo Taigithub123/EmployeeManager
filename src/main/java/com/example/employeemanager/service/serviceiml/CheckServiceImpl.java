@@ -1,9 +1,11 @@
-package com.example.employeemanager.service;
+package com.example.employeemanager.service.serviceiml;
 
 import com.example.employeemanager.dto.CheckDTO;
 import com.example.employeemanager.entity.Check;
 import com.example.employeemanager.entity.User;
 import com.example.employeemanager.repository.CheckRepository;
+import com.example.employeemanager.service.CheckService;
+import com.example.employeemanager.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;

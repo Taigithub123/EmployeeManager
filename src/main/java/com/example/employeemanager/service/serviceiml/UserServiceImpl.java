@@ -1,4 +1,4 @@
-package com.example.employeemanager.service;
+package com.example.employeemanager.service.serviceiml;
 
 import com.example.employeemanager.dto.SignupRequest;
 import com.example.employeemanager.entity.Role;
@@ -7,6 +7,7 @@ import com.example.employeemanager.entity.User;
 import com.example.employeemanager.exception.*;
 import com.example.employeemanager.repository.RoleRepository;
 import com.example.employeemanager.repository.UserRepository;
+import com.example.employeemanager.service.UserService;
 import com.example.employeemanager.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
