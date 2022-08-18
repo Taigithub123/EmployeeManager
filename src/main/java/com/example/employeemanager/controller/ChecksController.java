@@ -1,6 +1,7 @@
 package com.example.employeemanager.controller;
 
 import com.example.employeemanager.dto.CheckDTO;
+import com.example.employeemanager.dto.CheckErrorDTO;
 import com.example.employeemanager.dto.DateDTO;
 import com.example.employeemanager.dto.SearchDTO;
 import com.example.employeemanager.entity.Check;
@@ -33,6 +34,11 @@ public class ChecksController {
     @GetMapping("{id}/findDate")
     public ResponseEntity<List<CheckDTO>> getListCheck(@RequestBody DateDTO dateDTO,@PathVariable long id) {
         return ResponseEntity.ok().body(checkService.getListSelectDay(dateDTO.getStartDate(),dateDTO.getEndDate(),id));
+    }
+    @GetMapping("findError")
+    public ResponseEntity<?> getListCheck(@RequestBody DateDTO dateDTO) throws ParseException {
+        List<CheckErrorDTO> employee = checkService.getErrorEmployeeInMonth(dateDTO.getStartDate(), dateDTO.getEndDate());
+        return ResponseEntity.ok().body(employee);
     }
 
 }

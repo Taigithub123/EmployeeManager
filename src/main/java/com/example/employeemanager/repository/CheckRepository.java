@@ -17,8 +17,8 @@ public interface CheckRepository extends JpaRepository<Check, Long> {
 //    List<Check> findByTimeCheckBetween(LocalDateTime timeCheckStart, LocalDateTime timeCheckEnd);
     @Query("SELECT c FROM Check c  WHERE timeCheck BETWEEN :startDate AND :endDate AND user_id = :id")
     List<Check> getCheckinsBetweenDatesById(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("id") Long id);
-
-
+    @Query(value = "SELECT * FROM checks   WHERE time_check BETWEEN :startDate AND :endDate ", nativeQuery = true)
+    List<Check> getErrorEmployeeInMonth(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
 
 //    @Query("select c from Check c where c.timeCheck = :timeCheck")

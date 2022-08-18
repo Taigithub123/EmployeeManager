@@ -10,6 +10,7 @@ import com.example.employeemanager.repository.RoleRepository;
 import com.example.employeemanager.repository.UserRepository;
 import com.example.employeemanager.security.services.RefreshTokenService;
 import com.example.employeemanager.security.services.UserDetailsImpl;
+import com.example.employeemanager.service.EmailService;
 import com.example.employeemanager.service.UserService;
 import com.example.employeemanager.utils.JwtUtils;
 import com.example.employeemanager.utils.Utils;
@@ -53,6 +54,8 @@ public class UsersController {
     UserService userService;
     @Autowired
     RefreshTokenService refreshTokenService;
+    @Autowired
+    EmailService emailService;
 
     @PostMapping("auth/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
@@ -94,6 +97,7 @@ public class UsersController {
                 encoder.encode(signUpRequest.getPassword()));
         user.setFullName(signUpRequest.getFullName());
         user.setCode(utils.getFourDigit());
+
         Set<Role> roles = new HashSet<>();
 
         if (signUpRequest.getRole() == 1) {
@@ -108,8 +112,8 @@ public class UsersController {
             roles.add(userRole);
         }
         user.setRoles(roles);
-        userRepository.save(user);
-
+        User save = userRepository.save(user);
+        emailService.sendEmail(save);
         return ResponseEntity.ok("User registered successfully!");
     }
 
