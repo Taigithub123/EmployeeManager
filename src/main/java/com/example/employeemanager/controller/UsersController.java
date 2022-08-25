@@ -6,6 +6,7 @@ import com.example.employeemanager.entity.Role;
 import com.example.employeemanager.entity.RoleEnum;
 import com.example.employeemanager.entity.User;
 import com.example.employeemanager.exception.*;
+import com.example.employeemanager.projection.UserCount;
 import com.example.employeemanager.repository.RoleRepository;
 import com.example.employeemanager.repository.UserRepository;
 import com.example.employeemanager.security.services.RefreshTokenService;
@@ -192,4 +193,8 @@ public class UsersController {
 //    public ResponseEntity<List<User>> sortName(){
 //        return ResponseEntity.ok(userService.sortName());
 //    }
+    @GetMapping("count")
+    public ResponseEntity<List<UserCount>> count(){
+    return new ResponseEntity<>(userService.countUserByUserName(),  HttpStatus.OK);
+    }
 }

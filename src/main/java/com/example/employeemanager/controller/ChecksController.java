@@ -3,17 +3,12 @@ package com.example.employeemanager.controller;
 import com.example.employeemanager.dto.CheckDTO;
 import com.example.employeemanager.dto.CheckErrorDTO;
 import com.example.employeemanager.dto.DateDTO;
-import com.example.employeemanager.dto.SearchDTO;
-import com.example.employeemanager.entity.Check;
 import com.example.employeemanager.service.CheckService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -39,6 +34,21 @@ public class ChecksController {
     public ResponseEntity<?> getListCheck(@RequestBody DateDTO dateDTO) throws ParseException {
         List<CheckErrorDTO> employee = checkService.getErrorEmployeeInMonth(dateDTO.getStartDate(), dateDTO.getEndDate());
         return ResponseEntity.ok().body(employee);
+    }
+    @GetMapping()
+    public ResponseEntity<?> getAll() {
+
+        return ResponseEntity.ok(checkService.findAll());
+    }
+    @GetMapping("/close-projection")
+    public ResponseEntity<?> getAllClose() {
+
+        return ResponseEntity.ok(checkService.findByCheckClose());
+    }
+    @GetMapping("/open-projection")
+    public ResponseEntity<?> getAllOpen() {
+
+        return ResponseEntity.ok(checkService.findByCheckOpen());
     }
 
 }

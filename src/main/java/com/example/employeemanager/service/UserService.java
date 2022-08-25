@@ -1,10 +1,10 @@
 package com.example.employeemanager.service;
 
-import com.example.employeemanager.dto.SignupRequest;
+import com.example.employeemanager.dto.UserDTO;
 import com.example.employeemanager.entity.User;
+import com.example.employeemanager.projection.UserCount;
 import org.springframework.data.domain.Sort;
 
-import java.security.Principal;
 import java.util.List;
 
 public interface UserService {
@@ -12,7 +12,7 @@ public interface UserService {
     List<User> findByFullNameSort(String fullName, Sort sort);
 
     User findByUsername(String username);
-
+    List<UserDTO> findAll();
     User findByCode(int code);
 
 //    String addUser(SignupRequest request);
@@ -21,4 +21,5 @@ public interface UserService {
     void deleteUser(long id);
 //    List<User> findByName(String name);
 //    List<User> sortName();
+    List<UserCount> countUserByUserName();
 }

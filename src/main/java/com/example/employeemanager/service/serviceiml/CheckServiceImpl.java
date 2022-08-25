@@ -4,6 +4,8 @@ import com.example.employeemanager.dto.CheckDTO;
 import com.example.employeemanager.dto.CheckErrorDTO;
 import com.example.employeemanager.entity.Check;
 import com.example.employeemanager.entity.User;
+import com.example.employeemanager.projection.CheckClose;
+import com.example.employeemanager.projection.CheckOpen;
 import com.example.employeemanager.repository.CheckRepository;
 import com.example.employeemanager.service.CheckService;
 import com.example.employeemanager.service.UserService;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -42,7 +45,6 @@ public class CheckServiceImpl implements CheckService {
 
     @Override
     public Check checkIn(int code) {
-        Date date = new Date();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime time = LocalTime.parse(LocalTime.now().format(formatter));
 //        LocalTime lt = LocalTime.parse("08:30", formatter);
@@ -133,5 +135,28 @@ public class CheckServiceImpl implements CheckService {
 //    public List<Check> getListSelectDay(LocalDateTime start, LocalDateTime end) {
 //        return checkRepository.getUserByDate(start, end);
 //    }
+    }
+
+    @Override
+    public List<CheckDTO> getCheckinsBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
+        List<CheckDTO> checkDTO=new ArrayList<>();
+        List<Check> entities = checkRepository.getCheckinsBetweenDates(startDate, endDate);
+        for (Check entity : entities)
+            checkDTO.add(modelMapper.map(entity, CheckDTO.class));
+        return checkDTO;
+
+    }
+    @Override
+    public List<Check> findAll() {
+        return checkRepository.findAll();
+    }
+//close projection
+    @Override
+    public List<CheckClose> findByCheckClose() {
+        return checkRepository.findBy(CheckClose.class);
+    }
+    @Override
+    public List<CheckOpen> findByCheckOpen() {
+        return checkRepository.findBy(CheckOpen.class);
     }
 }

@@ -26,4 +26,19 @@ public class EmailServiceImpl implements EmailService {
         javaMailSender.send(message);
         return "Sent message successfull";
     }
+
+    @Override
+    public String sendMail1(String email, String subject, String content) {
+
+        message.setTo();
+        message.setSentDate(date);
+        message.setSubject(subject);
+        message.setText(content);
+        String htmlMsg = content + "<br><h2><b>Have a nice day!</b><br><font color=purple><b>Komu<b></font></h2>"
+                + "<br><img src='https://ncc.asia/images/logo/logo.png'>";
+        message.setText(htmlMsg);
+        javaMailSender.send(message);
+        return "Sent message successfull";
+
+    }
 }

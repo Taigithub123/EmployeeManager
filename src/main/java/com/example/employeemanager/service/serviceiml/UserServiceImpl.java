@@ -1,10 +1,12 @@
 package com.example.employeemanager.service.serviceiml;
 
 import com.example.employeemanager.dto.SignupRequest;
+import com.example.employeemanager.dto.UserDTO;
 import com.example.employeemanager.entity.Role;
 import com.example.employeemanager.entity.RoleEnum;
 import com.example.employeemanager.entity.User;
 import com.example.employeemanager.exception.*;
+import com.example.employeemanager.projection.UserCount;
 import com.example.employeemanager.repository.RoleRepository;
 import com.example.employeemanager.repository.UserRepository;
 import com.example.employeemanager.service.UserService;
@@ -41,6 +43,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).get();
+    }
+
+    @Override
+    public List<UserDTO> findAll() {
+        return null;
     }
 
     @Override
@@ -95,6 +102,11 @@ public class UserServiceImpl implements UserService {
         User deleteUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundExeption("nhân viên không tồn tại" + id));
         userRepository.delete(deleteUser);
+    }
+
+    @Override
+    public List<UserCount> countUserByUserName() {
+        return userRepository.countTotalUsersByUsernameClass();
     }
 
 //    @Override
