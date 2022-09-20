@@ -1,4 +1,4 @@
-package com.example.employeemanager.controller;
+package com.example.employeemanager.advice;
 
 import com.example.employeemanager.exception.ErrorMessage;
 import com.example.employeemanager.exception.TokenRefreshException;

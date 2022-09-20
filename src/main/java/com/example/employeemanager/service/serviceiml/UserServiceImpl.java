@@ -1,9 +1,7 @@
 package com.example.employeemanager.service.serviceiml;
 
-import com.example.employeemanager.dto.SignupRequest;
+import com.example.employeemanager.convert.UserConvert;
 import com.example.employeemanager.dto.UserDTO;
-import com.example.employeemanager.entity.Role;
-import com.example.employeemanager.entity.RoleEnum;
 import com.example.employeemanager.entity.User;
 import com.example.employeemanager.exception.*;
 import com.example.employeemanager.projection.UserCount;
@@ -11,28 +9,39 @@ import com.example.employeemanager.repository.RoleRepository;
 import com.example.employeemanager.repository.UserRepository;
 import com.example.employeemanager.service.UserService;
 import com.example.employeemanager.utils.Utils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
-    UserRepository userRepository;
+    ModelMapper modelMapper;
     @Autowired
-    Utils utils;
-    PasswordEncoder encoder;
-    @Autowired
-    RoleRepository roleRepository;
+    UserConvert userConvert;
+    private final UserRepository userRepository;
+    private final Utils utils;
+    private final PasswordEncoder encoder;
+    private final RoleRepository roleRepository;
 
+
+    public UserServiceImpl(UserRepository userRepository, Utils utils, PasswordEncoder encoder, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.utils = utils;
+        this.encoder = encoder;
+        this.roleRepository = roleRepository;
+
+    }
 
 
     @Override
@@ -47,9 +56,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> findAll() {
-        return null;
+        List<User> all = userRepository.findAll();
+        List<UserDTO> userDTOS = userConvert.toDto(all);
+        return userDTOS;
     }
-
+    //        List<CheckErrorDTO> checkErrorDTOS = new ArrayList<>();
+//        List<Check> checks = checkRepository.getErrorEmployeeInMonth(start, end);
+//        for (Check entity : checks) {
+//            CheckErrorDTO checkErrorDTO = modelMapper.map(entity, CheckErrorDTO.class);
+//            checkErrorDTO.setCode(entity.getUser() != null ? entity.getUser().getCode() : null);
+//            checkErrorDTO.getUser().setUsername(entity.getUser().getUsername());
+//            checkErrorDTO.getUser().setFullName(entity.getUser().getFullName());
+//            checkErrorDTOS.add(checkErrorDTO);
+//        }
+//        return checkErrorDTOS;
     @Override
     public User findByCode(int code) {
         return userRepository.findByCode(code).orElseThrow(() -> {
@@ -57,36 +77,12 @@ public class UserServiceImpl implements UserService {
         });
     }
 
-//    @Override
-//    public  String addUser(SignupRequest request) {
-//        User  user= new User(request.getUsername(),
-//                request.getEmail(),
-//                encoder.encode(request.getPassword()));
-//        user.setFullName(request.getFullName());
-//        user.setCode(utils.getFourDigit());
-//        Set<Role> roles = new HashSet<>();
-//        if (request.getRole() == 1) {
-//            Role adminRole = roleRepository.findByName(RoleEnum.ROLE_ADMIN)
-//                    .orElseThrow(() -> new BadRequestException(
-//                            new SysError(Errors.ERROR_ROLE_NOT_FOUND, new ErrorParam(Errors.ROLE))));
-//            roles.add(adminRole);
-//        } else {
-//            Role userRole = roleRepository.findByName(RoleEnum.ROLE_USER)
-//                    .orElseThrow(() -> new BadRequestException(
-//                            new SysError(Errors.ERROR_ROLE_NOT_FOUND, new ErrorParam(Errors.ROLE))));
-//            roles.add(userRole);
-//        }
-//        user.setRoles(roles);
-//
-//     userRepository.save(user);
-//     return "thêm thành cong";
-//    }
 
     @Override
     public User findById(long id) {
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundExeption("nhân viên không tồn tại" + id));
     }
-
+    @Transactional(rollbackOn = Exception.class)
     @Override
     public User updateUser(long id, User user) {
         User updateUser = userRepository.findById(id)
@@ -105,15 +101,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDTO> findByName(String name) {
+        List<UserDTO> userDTOS = new ArrayList<>();
+        List<User> users=userRepository.findByFullNameContains(name);
+        for (User user : users) {
+            userDTOS.add(modelMapper.map(user, UserDTO.class));
+        }
+        return  userDTOS;
+    }
+
+    @Override
     public List<UserCount> countUserByUserName() {
         return userRepository.countTotalUsersByUsernameClass();
     }
 
-//    @Override
-//    public List<User> findByName(String name) {
-//        return userRepository.findByFullNameLike(name);
-//    }
-//
+    @Override
+    @Cacheable("user")
+    public Page<User> findByNamePage(String fullname, Pageable pageable) {
+        return userRepository.findByFullNameContains(fullname, pageable);
+    }
+
+    @Override
+    public Slice<User> findByNameSlice(String fullname, Pageable pageable) {
+        return userRepository.findByFullNameLike(fullname,pageable);
+    }
 //    @Override
 //    public List<User> sortName() {
 //        List<User> sortedName = userRepository.findAll().stream()
@@ -122,4 +133,5 @@ public class UserServiceImpl implements UserService {
 //        return sortedName;
 //    }
 
-}
+    }
+

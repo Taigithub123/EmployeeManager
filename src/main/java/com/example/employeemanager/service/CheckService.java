@@ -6,7 +6,7 @@ import com.example.employeemanager.entity.Check;
 import com.example.employeemanager.projection.CheckClose;
 import com.example.employeemanager.projection.CheckOpen;
 
-import java.sql.Timestamp;
+
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Date;

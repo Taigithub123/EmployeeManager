@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -17,6 +18,7 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private JavaMailSender javaMailSender;
     @Override
+    @Async
     public String sendEmail(User user) {
         message.setTo(user.getEmail());
         message.setSentDate(date);
@@ -28,12 +30,13 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
+    @Async
     public String sendMail1(String email, String subject, String content) {
-
-        message.setTo();
+        message.setTo(email);
         message.setSentDate(date);
         message.setSubject(subject);
         message.setText(content);
+
         String htmlMsg = content + "<br><h2><b>Have a nice day!</b><br><font color=purple><b>Komu<b></font></h2>"
                 + "<br><img src='https://ncc.asia/images/logo/logo.png'>";
         message.setText(htmlMsg);

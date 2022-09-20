@@ -1,5 +1,6 @@
 package com.example.employeemanager.dto;
 
+import com.example.employeemanager.entity.RoleEnum;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,5 +12,5 @@ import lombok.Setter;
 @Setter
 public class RoleDTO  {
     private Integer id;
-    private String name;
+    private RoleEnum name;
 }

@@ -5,12 +5,13 @@ import com.example.employeemanager.entity.Check;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-
+@Repository
 public interface CheckRepository extends JpaRepository<Check, Long> {
     List<Check> findAllByUserBetween(Date start, Date end);
 

@@ -16,11 +16,11 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 public class UserDTO {
-    private String usename;
+    private String username;
     private String fullName;
     private String email;
     private int code;
     @JsonIgnore
     private List<CheckDTO> checkins = new ArrayList<CheckDTO>();
-    private Set<RoleDTO> roles = new HashSet<RoleDTO>();
+    private Set<RoleDTO> roles ;
 }

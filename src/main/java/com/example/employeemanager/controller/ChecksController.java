@@ -4,7 +4,7 @@ import com.example.employeemanager.dto.CheckDTO;
 import com.example.employeemanager.dto.CheckErrorDTO;
 import com.example.employeemanager.dto.DateDTO;
 import com.example.employeemanager.service.CheckService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +14,13 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/checks")
 public class ChecksController {
-    @Autowired
-    CheckService checkService;
+
+    private final CheckService checkService;
+
+    public ChecksController(CheckService checkService) {
+        this.checkService = checkService;
+    }
+
     @GetMapping("in/{code}")
     public ResponseEntity<?> checkIn(@PathVariable int code) {
         return ResponseEntity.ok(checkService.checkIn(code));
@@ -35,9 +40,9 @@ public class ChecksController {
         List<CheckErrorDTO> employee = checkService.getErrorEmployeeInMonth(dateDTO.getStartDate(), dateDTO.getEndDate());
         return ResponseEntity.ok().body(employee);
     }
-    @GetMapping()
+    @GetMapping("all")
+    @Cacheable("checkin")
     public ResponseEntity<?> getAll() {
-
         return ResponseEntity.ok(checkService.findAll());
     }
     @GetMapping("/close-projection")
